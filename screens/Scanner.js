@@ -26,10 +26,30 @@ const [isLoading, setIsLoading] = useState(false)
   }, []);
 
   // What happens when we scan the bar code
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     setText(data)
-    console.log('Type: ' + type + '\nData: ' + data)
+    // call endpoint to confirms the attendee
+    console.log("here")
+    console.log(data)
+    try {
+      const response = await fetch(data, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email:  "majd.alkayyal@tum.de"}),
+      });
+  
+      if (!response.ok) throw new Error('Network response was not ok.');
+  
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+    }
+
   };
 
   // Check permissions and return the screens
