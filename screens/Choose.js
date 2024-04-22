@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Pressable, Text, StyleSheet, Animated } from 'react-native';
+import { View, Pressable, Text, StyleSheet, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
-import { COLORS } from '../constants'; // Import the COLORS constant
+import { COLORS } from '../constants';
+
+const { height, width } = Dimensions.get('window');
 
 export default function Choose() {
     const navigation = useNavigation();
-    const opacity = React.useRef(new Animated.Value(1)).current; // Initial opacity value
+    const opacity = React.useRef(new Animated.Value(1)).current;
 
     const handlePressIn = () => {
-        // Animate to lower opacity when pressed
         Animated.timing(opacity, {
             toValue: 0.5,
             duration: 100,
@@ -18,7 +19,6 @@ export default function Choose() {
     };
 
     const handlePressOut = () => {
-        // Animate to restore opacity when released
         Animated.timing(opacity, {
             toValue: 1,
             duration: 100,
@@ -28,49 +28,33 @@ export default function Choose() {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Choose an Action</Text>
-            </View>
-            
             {/* Button Container */}
             <View style={styles.buttonContainer}>
-                {/* Scan Button */}
                 <Pressable
                     style={({ pressed }) => [
                         styles.pressable,
-                        { backgroundColor: pressed ? COLORS.primary : COLORS.secondary }, // Use COLORS.primary
-                    ]} 
-                    onPressIn={handlePressIn} // Call handlePressIn when pressed
-                    onPressOut={handlePressOut} // Call handlePressOut when released
+                        { backgroundColor: pressed ? COLORS.primary : COLORS.secondary },
+                    ]}
+                    onPressIn={handlePressIn}
+                    onPressOut={handlePressOut}
                     onPress={() => navigation.navigate('Scanner')}
                 >
                     <FontAwesome name="camera" size={24} color="white" style={styles.icon} />
                     <Text style={styles.buttonText}>Scan QR Code</Text>
                 </Pressable>
-                
-                {/* Divider */}
-                <View style={styles.divider} />
+            </View>
 
-                {/* Add Attendee Button */}
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.pressable,
-                        { backgroundColor: pressed ? COLORS.primary : COLORS.secondary }, // Use COLORS.primary
-                    ]}
-                    onPressIn={handlePressIn} // Call handlePressIn when pressed
-                    onPressOut={handlePressOut} // Call handlePressOut when released
-                    onPress={() => navigation.navigate('WelcomeScreen')}
-                >
-                    <FontAwesome name="user-plus" size={24} color="white" style={styles.icon} />
-                    <Text style={styles.buttonText}>Add Attendee</Text>
-                </Pressable>
-            </View>
-            
-            {/* Footer */}
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>© 2024 YourApp. All rights reserved.</Text>
-            </View>
+            {/* Plus Button */}
+            <Pressable
+                style={styles.plusButton}
+                
+                onPress={() => navigation.navigate('Form')}
+            >
+                <FontAwesome name="plus" size={36} color="white" />
+            </Pressable>
+
+            {/* Message */}
+            <Text style={styles.message}>Tap the plus button to manually add attendees</Text>
         </View>
     );
 };
@@ -82,16 +66,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFFFFF',
     },
-    header: {
-        marginBottom: 20,
-    },
-    headerText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: COLORS.primary,
-    },
     buttonContainer: {
         width: '80%',
+        marginBottom: 20,
     },
     pressable: {
         flexDirection: 'row',
@@ -99,13 +76,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 100,
         borderRadius: 10,
-        marginVertical: 10,
         elevation: 5,
-    },
-    divider: {
-        borderBottomWidth: 1,
-        borderBottomColor: 'gray',
-        marginVertical: 20,
     },
     buttonText: {
         color: 'white',
@@ -116,12 +87,23 @@ const styles = StyleSheet.create({
     icon: {
         marginRight: 10,
     },
-    footer: {
+    plusButton: {
         position: 'absolute',
-        bottom: 20,
+        bottom: height * 0.1,
+        alignSelf: 'center',
+        backgroundColor: COLORS.primary,
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 5,
     },
-    footerText: {
-        fontSize: 12,
-        color: 'gray',
+    message: {
+        position: 'absolute',
+        bottom: height * 0.05,
+        width: width * 0.8,
+        textAlign: 'center',
+        color: 'black',
     },
 });

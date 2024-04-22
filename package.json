@@ -38,6 +38,7 @@
     "react-native-svg": "13.9.0",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
+    "validate.js": "^0.13.1",
     "validator": "^13.11.0"
   },
   "devDependencies": {
