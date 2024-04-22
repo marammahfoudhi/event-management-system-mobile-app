@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'black', // Update background color to black
     },
     buttonContainer: {
         width: '80%',
@@ -104,6 +104,6 @@ const styles = StyleSheet.create({
         bottom: height * 0.05,
         width: width * 0.8,
         textAlign: 'center',
-        color: 'black',
+        color: 'white', // Update text color to white
     },
 });

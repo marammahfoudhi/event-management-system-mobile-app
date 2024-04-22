@@ -13,6 +13,7 @@ const Form = () => {
   const [email, setEmail] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [attendees, setAttendees] = useState([]);
+  const [emailTouched, setEmailTouched] = useState(false);
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,7 +25,8 @@ const Form = () => {
   const handleSubmit = () => {
     const validEmail = emailPattern.test(email);
     setIsValidEmail(validEmail);
-    
+    setEmailTouched(true);
+
     if (validEmail && firstName && lastName) {
       const newAttendee = {
         id: Math.random().toString(36).substr(2, 9),
@@ -36,6 +38,7 @@ const Form = () => {
       setFirstName('');
       setLastName('');
       setEmail('');
+      setEmailTouched(false);
     }
   };
 
@@ -65,48 +68,45 @@ const Form = () => {
       <Text style={styles.title}>Add Attendee</Text>
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
           placeholder="First Name"
-          placeholderTextColor="#888"
+          placeholderTextColor="#CCC"
           value={firstName}
           onChangeText={setFirstName}
         />
         <TextInput
-          style={styles.input}
+          style={[styles.input, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
           placeholder="Last Name"
-          placeholderTextColor="#888"
+          placeholderTextColor="#CCC"
           value={lastName}
           onChangeText={setLastName}
         />
         <TextInput
-          style={[styles.input, !isValidEmail && styles.invalidInput]}
+          style={[styles.input, !isValidEmail && styles.invalidInput, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
           placeholder="Email"
-          placeholderTextColor="#888"
+          placeholderTextColor="#CCC"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
         />
       </View>
-      {!isValidEmail && <Text style={styles.errorText}>Please enter a valid email address</Text>}
-      <Button
-        title="Submit"
-        color={COLORS.primary}
-        onPress={handleSubmit}
-        style={styles.submitButton}
-      />
-      <Text style={styles.attendeesTitle}>Manually Added Attendees:</Text>
+      {!isValidEmail && emailTouched && <Text style={styles.errorText}>Please enter a valid email address</Text>}
+      <TouchableOpacity style={[styles.button, {backgroundColor: COLORS.primary}]} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+      <Text style={[styles.attendeesTitle, { color: COLORS.white }]}>Manually Added Attendees:</Text>
       <View style={styles.attendeesContainer}>
         {attendees.map((attendee) => (
           <View key={attendee.id} style={styles.attendee}>
-            <Text>{attendee.firstName} {attendee.lastName}</Text>
-            <Text>{attendee.email}</Text>
+            <Text style={{ color: COLORS.white }}>{attendee.firstName} {attendee.lastName}</Text>
+            <Text style={{ color: COLORS.white }}>{attendee.email}</Text>
             <View style={styles.actions}>
               <TouchableOpacity onPress={() => toggleModal(attendee)}>
-                <FontAwesome name="edit" size={24} color={COLORS.black} style={styles.icon} />
+                <FontAwesome name="edit" size={24} color={COLORS.gray} style={styles.icon} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDeleteAttendee(attendee.id)}>
-                <FontAwesome name="trash" size={24} color={COLORS.red} style={styles.icon} />
+                <FontAwesome name="trash" size={24} color={COLORS.gray} style={[styles.icon, { marginLeft: 10 }]} />
               </TouchableOpacity>
             </View>
           </View>
@@ -117,23 +117,23 @@ const Form = () => {
           <Text style={styles.modalTitle}>Edit Attendee</Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
               placeholder="First Name"
-              placeholderTextColor="#888"
+              placeholderTextColor="#CCC"
               value={selectedAttendee?.firstName}
               onChangeText={(text) => setSelectedAttendee({ ...selectedAttendee, firstName: text })}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
               placeholder="Last Name"
-              placeholderTextColor="#888"
+              placeholderTextColor="#CCC"
               value={selectedAttendee?.lastName}
               onChangeText={(text) => setSelectedAttendee({ ...selectedAttendee, lastName: text })}
             />
             <TextInput
-              style={[styles.input, !isValidEmail && styles.invalidInput]}
+              style={[styles.input, !isValidEmail && styles.invalidInput, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
               placeholder="Email"
-              placeholderTextColor="#888"
+              placeholderTextColor="#CCC"
               value={selectedAttendee?.email}
               onChangeText={(text) => setSelectedAttendee({ ...selectedAttendee, email: text })}
               autoCapitalize="none"
@@ -141,7 +141,9 @@ const Form = () => {
             />
           </View>
           {!isValidEmail && <Text style={styles.errorText}>Please enter a valid email address</Text>}
-          <Button title="Save Changes" color={COLORS.primary} onPress={handleSaveChanges} />
+          <TouchableOpacity style={[styles.button, {backgroundColor: COLORS.primary}]} onPress={handleSaveChanges}>
+            <Text style={styles.buttonText}>Save Changes</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </View>
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'black',
     paddingHorizontal: 20,
     paddingBottom: height * 0.2,
   },
@@ -177,22 +179,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 10,
     fontSize: 16,
-    color: COLORS.black,
+    color: COLORS.white,
     ...FONTS.body3,
   },
   invalidInput: {
     borderColor: COLORS.red,
   },
   errorText: {
-    color: COLORS.red,
+    color: 'white',
     marginBottom: 10,
     ...FONTS.body3,
   },
-  submitButton: {
+  button: {
     width: '100%',
     height: 50,
     borderRadius: SIZES.radius,
     marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    ...FONTS.h3,
+    color: COLORS.white,
   },
   attendeesTitle: {
     fontSize: 20,
@@ -226,7 +234,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'black',
     paddingHorizontal: 20,
   },
   modalTitle: {
