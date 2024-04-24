@@ -7,9 +7,8 @@ import WelcomeScreen from "./WelcomeScreen";
 import Choose from "./Choose"
 export {
     Login,
-   
     Scanner ,
     SplashScreen ,
     WelcomeScreen,
-   Choose,
+    Choose,
 }

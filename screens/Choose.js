@@ -28,7 +28,6 @@ export default function Choose() {
 
     return (
         <View style={styles.container}>
-            {/* Button Container */}
             <View style={styles.buttonContainer}>
                 <Pressable
                     style={({ pressed }) => [

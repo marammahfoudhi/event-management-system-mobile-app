@@ -40,9 +40,8 @@ const Scanner = ({ navigation }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: "talalajmi98@hotmail.com" }),
       });
-
+      console.log(response)
       if (!response.ok) throw new Error("Network response was not ok.");
 
       const result = await response.json();

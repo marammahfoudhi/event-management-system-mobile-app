@@ -7,7 +7,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      
       "resizeMode": "contain",
       "backgroundColor": "black"
     },
@@ -21,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.myorangeeapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
