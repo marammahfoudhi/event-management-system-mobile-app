@@ -148,18 +148,16 @@ const Form = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={[styles.title, {color: 'white'}]}>Select an Event</Text>
       <View style={styles.pickerContainer}>
-        <Text style={[styles.title, {color: 'white'}]}>Select an Event</Text>
-        <Picker
-          selectedValue={selectedEventId}
-          style={styles.picker}
-          onValueChange={(itemValue, itemIndex) => setSelectedEventId(itemValue)}
-          dropdownIconColor="white"
-          mode="dropdown"
-        >
-          <Picker.Item label="Select an event..." value={null} color="white"/>
+      <Picker
+        selectedValue={selectedEventId}
+        style={styles.picker}
+        onValueChange={(itemValue, itemIndex) => setSelectedEventId(itemValue)}
+      >
+          <Picker.Item label="Select an event..." value={null} color="black"/>
           {events.map((event) => (
-            <Picker.Item key={event.id} label={event.title} value={event.id} color="white"/>
+            <Picker.Item key={event.id} label={event.title} value={event.id} color="black"/>
           ))}
         </Picker>
       </View>
@@ -359,7 +357,7 @@ const styles = StyleSheet.create({
   picker: {
     width: '100%',
     height: 50,
-    color: 'orange',
+    color: COLORS.primary, // This should be a contrasting color
   },
 });
 
