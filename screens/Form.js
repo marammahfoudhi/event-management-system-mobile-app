@@ -31,10 +31,10 @@ const Form = () => {
     try {
       const response = await fetch('https://orange-event-application.vercel.app/api/get-events');
       const data = await response.json();
-      setEvents(data["body"]);
-      console.log(data["body"])
-      if (data["body"].length > 0) {
-        setSelectedEventId(data["body"][0].id); // Automatically select the first event
+      console.log('Fetched events:', data); // Log fetched events
+      setEvents(data.body);
+      if (data.body.length > 0) {
+        setSelectedEventId(data.body[0].id); // Automatically select the first event
       }
     } catch (error) {
       console.error('Failed to fetch events:', error);
@@ -148,19 +148,22 @@ const Form = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Select an Event</Text>
-
       <View style={styles.pickerContainer}>
+        <Text style={[styles.title, {color: 'white'}]}>Select an Event</Text>
         <Picker
           selectedValue={selectedEventId}
           style={styles.picker}
           onValueChange={(itemValue, itemIndex) => setSelectedEventId(itemValue)}
+          dropdownIconColor="white"
+          mode="dropdown"
         >
+          <Picker.Item label="Select an event..." value={null} color="white"/>
           {events.map((event) => (
-            <Picker.Item key={event.id} label={event.title} value={event.id} />
+            <Picker.Item key={event.id} label={event.title} value={event.id} color="white"/>
           ))}
         </Picker>
       </View>
+
       <Text style={styles.title}>Add Attendee</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -190,8 +193,7 @@ const Form = () => {
       <TouchableOpacity style={[styles.button, {backgroundColor: COLORS.primary}]} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
-      <View style={styles.spe}>
-      </View>
+
       <View style={styles.attendeesContainer}>
         {attendees.map((attendee) => (
           <View key={attendee.id} style={styles.attendee}>
@@ -208,16 +210,24 @@ const Form = () => {
           </View>
         ))}
       </View>
+
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Edit Attendee</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
-              placeholder="Name"
+              placeholder="First Name"
               placeholderTextColor="#CCC"
-              value={selectedAttendee?.name}
-              onChangeText={(text) => setSelectedAttendee({ ...selectedAttendee, name: text })}
+              value={selectedAttendee?.firstName}
+              onChangeText={(text) => setSelectedAttendee({ ...selectedAttendee, firstName: text })}
+            />
+            <TextInput
+              style={[styles.input, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
+              placeholder="Last Name"
+              placeholderTextColor="#CCC"
+              value={selectedAttendee?.lastName}
+              onChangeText={(text) => setSelectedAttendee({ ...selectedAttendee, lastName: text })}
             />
             <TextInput
               style={[styles.input, !isValidEmail && styles.invalidInput, {backgroundColor: 'rgba(255, 255, 255, 0.5)'}]}
@@ -235,6 +245,7 @@ const Form = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+
       <TouchableOpacity style={[styles.button, {backgroundColor: COLORS.primary}]} onPress={postAttendees}>
         <Text style={styles.buttonText}>Add to Event</Text>
       </TouchableOpacity>
@@ -336,28 +347,19 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     ...FONTS.body2,
   },
-  spe:{
-    backgroundColor: COLORS.primary,
-    opacity:0.5,
-    height:1,
-    width:'100%',
-    marginTop:15,
-    marginBottom:15,
-    paddingHorizontal: 20,
-  },
   pickerContainer: {
-    width: '100%', // Full width of its parent
-    height: 50, // Fixed height for touchability
-    backgroundColor: COLORS.primary, // Background color for the picker
-    borderRadius: 10, // Rounded corners
-    borderWidth: 1, // Border width
-    borderColor: 'grey', // Border color
-    marginBottom: 20, // Space below the picker
+    width: '100%',
+    backgroundColor: 'gray',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'grey',
+    marginBottom: 20,
+    paddingHorizontal: 10,
   },
   picker: {
-    width: '100%', // Ensures the picker fills the container
-    height: '100%', // Ensures the picker fills the container
-    color: 'white', // Text color
+    width: '100%',
+    height: 50,
+    color: 'orange',
   },
 });
 
