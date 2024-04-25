@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity, Modal } from 'react-native';
-import {Picker} from '@react-native-picker/picker'
+import { Picker } from '@react-native-picker/picker';
 import { FontAwesome } from '@expo/vector-icons';
 import { COLORS, SIZES, FONTS } from '../constants';
 import { useNavigation } from '@react-navigation/native';
@@ -42,22 +42,41 @@ const Form = () => {
   };
 
   const handleSubmit = () => {
+    // Check if any field is empty
+    if (!firstName || !lastName || !email || !selectedEventId) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Please complete the form",
+        text2: "All fields are required",
+      });
+      return;
+    }
+
     const validEmail = emailPattern.test(email);
     setIsValidEmail(validEmail);
     setEmailTouched(true);
 
-    if (validEmail && firstName && lastName && selectedEventId) {
-      const newAttendee = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: `${firstName} ${lastName}`,
-        email,
-      };
-      setAttendees([...attendees, newAttendee]);
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setEmailTouched(false);
+    if (!validEmail) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Please enter a valid email address",
+        text2: "Email format is incorrect",
+      });
+      return;
     }
+
+    const newAttendee = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: `${firstName} ${lastName}`,
+      email,
+    };
+    setAttendees([...attendees, newAttendee]);
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setEmailTouched(false);
   };
 
   const handleDeleteAttendee = (id) => {
@@ -81,6 +100,26 @@ const Form = () => {
   };
 
   const postAttendees = async () => {
+    if (attendees.length === 0) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "No attendees to add",
+        text2: "Please add attendees before proceeding",
+      });
+      return;
+    }
+
+    if (!selectedEventId) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Event not selected",
+        text2: "Please select an event before adding attendees",
+      });
+      return;
+    }
+
     try {
       const response = await fetch(`https://orange-event-application.vercel.app/api/add-attendee?eventId=${selectedEventId}`, {
         method: 'POST',
@@ -112,15 +151,15 @@ const Form = () => {
       <Text style={styles.title}>Select an Event</Text>
 
       <View style={styles.pickerContainer}>
-      <Picker
-        selectedValue={selectedEventId}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setSelectedEventId(itemValue)}
-      >
-        {events.map((event) => (
-          <Picker.Item key={event.id} label={event.title} value={event.id} />
-        ))}
-      </Picker>
+        <Picker
+          selectedValue={selectedEventId}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) => setSelectedEventId(itemValue)}
+        >
+          {events.map((event) => (
+            <Picker.Item key={event.id} label={event.title} value={event.id} />
+          ))}
+        </Picker>
       </View>
       <Text style={styles.title}>Add Attendee</Text>
       <View style={styles.inputContainer}>
@@ -148,7 +187,6 @@ const Form = () => {
           keyboardType="email-address"
         />
       </View>
-      {!isValidEmail && emailTouched && <Text style={styles.errorText}>Please enter a valid email address</Text>}
       <TouchableOpacity style={[styles.button, {backgroundColor: COLORS.primary}]} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
@@ -160,7 +198,7 @@ const Form = () => {
             <Text style={{ color: COLORS.white }}>{attendee.name}</Text>
             <Text style={{ color: COLORS.white }}>{attendee.email}</Text>
             <View style={styles.actions}>
-              <TouchableOpacity onPress={() => toggleModal(attendee)}>
+              <TouchableOpacity onPress={() => setIsModalVisible(true)}>
                 <FontAwesome name="edit" size={24} color={COLORS.gray} style={styles.icon} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDeleteAttendee(attendee.id)}>
